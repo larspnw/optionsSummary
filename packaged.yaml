@@ -1,0 +1,38 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Options Summary
+
+  '
+Globals:
+  Function:
+    Timeout: 3
+Outputs:
+  OptionsSummaryAPI:
+    Description: 'API Gateway endpoint URL for Prod stage '
+    Value:
+      Fn::Sub: https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/optionsSummary/
+  OptionsSummaryFunction:
+    Description: options summary function
+    Value:
+      Fn::GetAtt:
+      - OptionsSummaryFunction
+      - Arn
+  OptionsSummaryFunctionIamRole:
+    Description: options summary IAM role
+    Value:
+      Fn::GetAtt:
+      - OptionsSummaryFunctionRole
+      - Arn
+Resources:
+  OptionsSummaryFunction:
+    Properties:
+      CodeUri: s3://larsbucket1/ca71bddc1e430b1a2b2af24d29609e99
+      Events:
+        OptionsSummary:
+          Properties:
+            Method: get
+            Path: /optionsSummary
+          Type: Api
+      Handler: app.lambda_handler
+      Runtime: python3.7
+    Type: AWS::Serverless::Function
+Transform: AWS::Serverless-2016-10-31
